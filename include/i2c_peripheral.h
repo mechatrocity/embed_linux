@@ -4,12 +4,12 @@ template<typename T>
 class i2c_peripheral
 {
 public:
-  i2c_peripheral(unsigned int address);
+  i2c_peripheral(unsigned int address, i2c_bus& _bus);
 
-  void update();
+  void send_data(T data);
   T& get_data();
 
 private:
-  unsigned int addr;
-  T data;
-}
+  uint8_t addr_;
+  i2c_bus& bus_;
+};
