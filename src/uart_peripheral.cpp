@@ -2,15 +2,29 @@
 
 
 uart_peripheral::uart_peripheral(char* device)
-  : file_descriptor(0), data(), raw_data{'\0'}, new_data(false)
+  : file_descriptor(0),
+  data(), new_data(false), raw_data{'\0'}
 {
-  file_descriptor = open(device, O_RDWR | O_NOCTTY );
+  file_descriptor = open(device, O_RDWR|O_NOCTTY);
   if (file_descriptor < 0)
   {
+    // check errno
     perror(device);
     exit(-1);
   }
 }
+
+
+uart_peripheral::~uart_peripheral()
+{
+  memset(raw_data, '\0', 512);
+  int close_status = close(file_descriptor);
+  if (0 != close_status)
+  {
+    // FIXME
+  }
+}
+
 
 const std::string& uart_peripheral::read_canonical()
 {
@@ -21,7 +35,8 @@ const std::string& uart_peripheral::read_canonical()
   return data;
 }
 
-char* uart_peripheral::read_noncanonical(size_t length)
+
+const char* uart_peripheral::read_noncanonical(size_t length)
 {
   memset(raw_data, '\0', 512);
   int res = read(file_descriptor,raw_data,length);
@@ -33,7 +48,8 @@ char* uart_peripheral::read_noncanonical(size_t length)
   return raw_data;
 }
 
+
 void uart_peripheral::async_callback()
 {
-  
+
 }

@@ -4,20 +4,20 @@
 class uart_peripheral
 {
 public:
-  uart_peripheral(char* device);
-  ~uart_peripheral();
+  explicit uart_peripheral(char* device);  // TODO: include baud
+  virtual ~uart_peripheral();
 
-  bool new_data();
+  void write(std::string);
+  void write(char* data, size_t length);
 
-  explicit void write(std::string);
-  explicit void write(char* data, size_t length);
   const std::string& read_canonical();
-  char* read_noncanonical(size_t length);
+  const char* read_noncanonical(size_t length);
 
 private:
-  int file_descriptor;
+  void async_callback();
 
-  std::string data;
-  char raw_data[512];
+  int file_descriptor;
+  std::string data;  // TODO: no strings on an embedded platform!
   bool new_data;
-}
+  char raw_data[512];
+};
